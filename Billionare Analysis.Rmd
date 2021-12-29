@@ -1,0 +1,43 @@
+---
+title: "Billionare Analysis"
+output: pdf_document
+---
+
+```{r}
+install.packages("tidyverse")
+install.packages("naniar")
+install.packages("visdat")
+```
+Read the dataset
+```{r}
+library(tidyverse)
+library(naniar)
+library(visdat)
+Billionaires <- read.csv("forbes_billionaires.csv", header = TRUE)
+head(Billionaires)
+```
+
+remove rows with missing values
+```{r}
+colSums(is.na(Billionaires))
+Billionaires_cleaned<-na.omit(Billionaires)
+```
+
+
+```{r}
+Billionaires_cleaned[order(Billionaires_cleaned$NetWorth),]
+Billionaires_cleaned %>%
+  ggplot(aes(x = Billionaires_cleaned$Age)) + geom_histogram(binwidth = 10, color = "red", fill = "white") + labs(title = "Number of Billionare's by Age")
+```
+```{r}
+w<-table(Billionaires_cleaned$Country)
+t<-as.data.frame(w)
+z<-t[order(-t$Freq),][1:5,]
+data<-as.data.frame(z)
+data$percent = round(100*data$Freq/sum(data$Freq), digits = 1)
+data$label = paste(data$Var1," (", data$percent,"%)", sep = "")
+custom_colors <- c("red","Darkgreen","Yellow","Tomato","Purple")
+pie(data$Freq, labels = data$label,main = "Top 5 countries with most billionares",col=custom_colors)
+```
+```
+
